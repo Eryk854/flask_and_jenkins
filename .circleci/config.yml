@@ -47,7 +47,9 @@ jobs:
           command: docker load -i /tmp/workspace/image.tar
       - run:
           name: Publish DockerImage to Docker Hub
-          command: docker login -u "$DOCKERHUB_USERNAME" -p "$DOCKERHUB_PASS" | docker push $IMAGE_NAME:latest
+          command: |
+            echo "$DOCKERHUB_PASS" | docker login -u eryk123 -p --password-stdin
+            docker push $IMAGE_NAME:latest
 
 workflows:
   test_my_app:
