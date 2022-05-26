@@ -17,7 +17,7 @@ jobs:
             - .
   build_docker:
     environment:
-      IMAGE_NAME: jenkins_env
+      IMAGE_NAME: eryk123/jenkins_env
     docker:
       - image: circleci/buildpack-deps:stretch
     steps:
@@ -35,7 +35,7 @@ jobs:
             - ./image.tar
   push_docker:
     environment:
-      IMAGE_NAME: jenkins_env
+      IMAGE_NAME: eryk123/jenkins_env
     docker:
       - image: circleci/buildpack-deps:stretch
     steps:
@@ -47,8 +47,7 @@ jobs:
           command: docker load -i /tmp/workspace/image.tar
       - run:
           name: Publish DockerImage to Docker Hub
-          command: echo "siema" | echo "$DOCKERHUB_USERNAME"
-#          command: docker login -u "$DOCKERHUB_USERNAME" -p "$DOCKERHUB_PASS" | docker push $IMAGE_NAME:latest
+          command: docker login -u "$DOCKERHUB_USERNAME" -p "$DOCKERHUB_PASS" | docker push $IMAGE_NAME:latest
 
 workflows:
   test_my_app:
