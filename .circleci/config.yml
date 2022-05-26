@@ -1,6 +1,16 @@
 version: 2.1
+
 orbs:
   python: circleci/python@2.0.3
+
+# executors are some configuration which can be used in different job (reduce code redundancy)
+executors:
+  docker-publisher:
+    environment:
+      IMAGE_NAME: eryk123/jenkins_env
+    docker:
+      - image: circleci/buildpack-deps:stretch
+
 jobs:
   build_and_test: # this can be any name you choose
     executor: python/default # use the default executor defined within the orb
@@ -16,10 +26,7 @@ jobs:
           paths:
             - .
   build_docker:
-    environment:
-      IMAGE_NAME: eryk123/jenkins_env
-    docker:
-      - image: circleci/buildpack-deps:stretch
+    executor: docker_publisher
     steps:
       - checkout
       - setup_remote_docker
@@ -29,26 +36,26 @@ jobs:
       - run:
           name: Archive Docker image
           command: docker save -o image.tar $IMAGE_NAME
+      # save image to workspace to be able to read it in different component
       - persist_to_workspace:
           root: .
           paths:
             - ./image.tar
   push_docker:
-    environment:
-      IMAGE_NAME: eryk123/jenkins_env
-    docker:
-      - image: circleci/buildpack-deps:stretch
+    executor: docker_publisher
     steps:
+      # attached workspaces witch create save docker image
       - attach_workspace:
           at: /tmp/workspace
       - setup_remote_docker
       - run:
+          # load saved docker image
           name: Load archived Docker image
           command: docker load -i /tmp/workspace/image.tar
       - run:
           name: Publish DockerImage to Docker Hub
           command: |
-            echo "$DOCKERHUB_PASS" | docker login -u eryk123 --password-stdin
+            echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
             docker push $IMAGE_NAME:latest
 
 workflows:
