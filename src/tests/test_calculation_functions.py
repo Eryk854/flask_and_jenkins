@@ -12,4 +12,4 @@ def test_sub():
     a = 10
     b = 5
     res = sub(a, b)
-    assert res == 10
+    assert res == 5
