@@ -8,6 +8,7 @@ jobs:
       - checkout # checkout source code
       - python/install-packages:
           pkg-manager: poetry
+          args: --no-dev
       - run:
           name: Run tests
           command: poetry run  pytest
