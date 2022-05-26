@@ -8,10 +8,9 @@ jobs:
       - checkout # checkout source code
       - python/install-packages:
           pkg-manager: poetry
-          args: --dev
       - run:
           name: Run tests
-          command: python -m pytest
+          command: poetry run  pytest
       - persist_to_workspace:
           root: ~/project
           paths:
