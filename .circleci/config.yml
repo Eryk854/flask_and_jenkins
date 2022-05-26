@@ -1,6 +1,7 @@
 version: 2.1
 orbs:
   python: circleci/python@2.0.3
+
 # executors are some configuration which can be used in different job (reduce code redundancy)
 executors:
   docker-publisher:
@@ -8,6 +9,7 @@ executors:
       IMAGE_NAME: eryk123/jenkins_env
     docker:
       - image: circleci/buildpack-deps:stretch
+
 jobs:
   build_and_test: # this can be any name you choose
     executor: python/default # use the default executor defined within the orb
@@ -23,7 +25,7 @@ jobs:
           paths:
             - .
   build_docker:
-    executor: docker_publisher
+    executor: docker-publisher
     steps:
       - checkout
       - setup_remote_docker
@@ -39,7 +41,7 @@ jobs:
           paths:
             - ./image.tar
   push_docker:
-    executor: docker_publisher
+    executor: docker-publisher
     steps:
       # attached workspaces witch create save docker image
       - attach_workspace:
@@ -54,6 +56,7 @@ jobs:
           command: |
             echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
             docker push $IMAGE_NAME:latest
+
 workflows:
   test_my_app:
     jobs:
