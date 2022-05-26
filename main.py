@@ -1,8 +1,4 @@
+from flask_and_jenkins.calculation_functions import add
 
-
-def print_hi(name):
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
-
-
-if __name__ == '__main__':
-    print_hi('PyCharm')
+res = add(20, 30)
+print(res)
